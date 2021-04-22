@@ -46,6 +46,7 @@ while True:
         result = 0
         list_result.clear()
         ustanov = 3
+        i = 0
         list_vivod.clear()
     if values['-R180-'] == True:
         skor_rez = 180
