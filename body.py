@@ -4,6 +4,8 @@ num = 0
 list_result =[]
 ustanov = 3
 result = 0
+i = 0
+list_vivod = []
 sg.theme('DarkAmber')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('Токарная обработка:', size=(100, 1), font=("Helvetica", 25))],
@@ -26,9 +28,14 @@ while True:
     event, values = window.read()
 
     def ras(D, d, l, p, n):
-        skor = p * 1000 / 3.14 / D * 0.2  # скорость обработки в мм/мин
+        skor = p * 1000 / 3.14 / D
+        if skor <200:
+            skor =200
+        elif skor >1600:
+            skor = 1600
+        skor *= 0.2  # скорость обработки в мм/мин
         one_pr = l / skor  # время одного прохода
-        return ((D - d) / 3.5 * one_pr) / 100 * n
+        return ((D - d) / 4 * one_pr) / 100 * n
 
     if event == sg.WIN_CLOSED or event == 'Выход': # if user closes window or clicks cancel
         break
@@ -37,6 +44,10 @@ while True:
         window['text2'].update('------------')
         window['text3'].update('------------')
         result = 0
+        list_result.clear()
+        ustanov = 3
+        i = 0
+        list_vivod.clear()
     if values['-R180-'] == True:
         skor_rez = 180
         # window['text'].update(f'010 {values["-D-"]} = 180')
@@ -67,10 +78,12 @@ while True:
         if result == 0:
             sg.Popup('Внимание!','Сперва проведите расчеты!')
             continue
+        i += 1
         ustanov += result
         list_result.append(result)
-        window['text2'].update([f' {i}) ф{D}mm x ф{d}mm x {dl}mm                         '
-                                for i, j in enumerate(list_result, 1)])
+        list_obrab = [f'{i}) ф{D}mm x ф{d}mm x {dl}mm   --{round(result, 2)} мин     ']
+        list_vivod.append(list_obrab)
+        window['text2'].update(list_vivod)
         window['text3'].update('Общее время:               '
                                'Установка: 2 мин           '
                                'Замеры: 1 мин              '
