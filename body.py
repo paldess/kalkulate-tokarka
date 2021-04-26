@@ -1,11 +1,11 @@
 import PySimpleGUI as sg
 skor_rez = 180
-num = 0
 list_result =[]
-ustanov = 3
+ustanov = 2
 result = 0
 i = 0
 list_vivod = []
+vivod = []
 sg.theme('DarkAmber')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('Токарная обработка:', size=(100, 1), font=("Helvetica", 25))],
@@ -18,8 +18,8 @@ layout = [  [sg.Text('Токарная обработка:', size=(100, 1), font
             [sg.Text('Наполненность материалом, %:', size=(30, 1)), sg.InputText('100', key='-nap-')],
             [sg.Button('Рассчитать', size=(22, 2)), sg.Button('Добавить расчет', size=(22, 2)),
                             sg.Button('Очистить', size=(22, 2)), sg.Button('Выход', size=(22, 2))],
-            [sg.Text('------------', size=(25, 20), key='text1'), sg.Text('------------', size=(48, 20), key='text2'),
-                            sg.Text('------------', size=(25, 20), key='text3')]]
+            [sg.Text('------------', size=(25, 20), key='text1'), sg.Listbox(values=list_vivod, size=(48, 20), key='text2'),
+                            sg.Listbox(values=vivod, size=(25, 20), key='text3')]]
 
 # Create the Window
 window = sg.Window('Калькулятор времени обработки', layout, size=(800, 500))
@@ -61,7 +61,6 @@ while True:
         elif float(values['-D-']) <= 0 or float(values['-d-']) <= 0 or float(values['-dl-']) <= 0 or float(values['-nap-']) <= 0:
             sg.popup('Внимание!', 'Все значения должны быть больше 0!')
         else:
-            num += 1
             D = float(values['-D-'])
             d = float(values['-d-'])
             dl = float(values['-dl-'])
@@ -70,10 +69,6 @@ while True:
             x = str(f' Время обработки этапа:          {round(result, 2)}')
             window['text1'].update(x)
 
-            window['text3'].update('Общее время:               '
-                                   'Установка: 2 мин           '
-                                   'Замеры: 1 мин              '
-                                   f'Обработка: {round(ustanov, 2)}мин')
     if event == 'Добавить расчет':
         if result == 0:
             sg.Popup('Внимание!','Сперва проведите расчеты!')
@@ -81,13 +76,9 @@ while True:
         i += 1
         ustanov += result
         list_result.append(result)
-        list_obrab = [f'{i}) ф{D}mm x ф{d}mm x {dl}mm   --{round(result, 2)} мин     ']
+        list_obrab = (f'{i}) ф{D}mm x ф{d}mm x {dl}mm   --{round(result, 2)} мин     ')
         list_vivod.append(list_obrab)
         window['text2'].update(list_vivod)
-        window['text3'].update('Общее время:               '
-                               'Установка: 2 мин           '
-                               'Замеры: 1 мин              '
-                               f'Обработка: {round(ustanov, 2)}мин')
-
-
+        vivod = ('Общее время:', 'Установка: 2 мин', 'Замеры: 2 мин', f'Обработка: {round(ustanov, 2)}мин')
+        window['text3'].update(vivod)
 window.close()
